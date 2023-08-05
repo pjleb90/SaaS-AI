@@ -5,7 +5,7 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'SaaS AI',
+  title: 'SaaS AI/Genius',
   description: 'a SaaS AI Platform built with Next.js 13, React, Tailwind, ui.shadcn.com, Prisma, Stripe',
 }
 
