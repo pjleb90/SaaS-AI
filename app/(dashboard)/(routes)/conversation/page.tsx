@@ -1,18 +1,30 @@
 'use client';
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { ChatCompletionRequestMessage } from "openai";
+import axios from "axios";
+import { cn } from "@/lib/utils";
 import { MessageSquare } from "lucide-react";
 
 import { Heading } from "@/components/Heading";
+import { Empty } from "@/components/Empty";
+import { Loader } from "@/components/Loader";
 import { Input } from "@/components/ui/input";
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
-import { formSchema } from "./constants";
 import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/components/User-Avatar";
+import { BotAvatar } from "@/components/Bot-Avatar";
+import { formSchema } from "./constants";
 
 const ConversationPage = () => {
+    const router = useRouter();
+    const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -23,7 +35,27 @@ const ConversationPage = () => {
     const isLoading = form.formState.isSubmitting;
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        console.log(values);
+        try {
+            const userMessage: ChatCompletionRequestMessage = {
+                role: "user",
+                content: values.prompt
+            };
+            const newMessages = [...messages, userMessage];
+
+            const response = await axios.post("api/conversation", {
+                messages: newMessages
+            });
+
+            setMessages((current) => [...current, userMessage, response.data]);
+
+            form.reset();
+
+        } catch (error:any) {
+            // TODO: Open Pro Modal
+            console.log(error);
+        } finally {
+            router.refresh();
+        }
     }
 
     return (
@@ -68,14 +100,39 @@ const ConversationPage = () => {
                                     </FormItem>
                                 )}
                             />
-                            <Button className="col-span-12 lg:col-span-2 w-full" type="submit" disabled={isLoading} size="icon">
+                            <Button className="col-span-12 lg:col-span-2 w-full"
+                                type="submit"
+                                disabled={isLoading} size="icon"
+                            >
                                 Generate
                             </Button>
                         </form>
                     </Form>
                 </div>
                 <div className="space-y-4 mt-4">
-                    Response
+                    {isLoading && (
+                        <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
+                            <Loader />
+                        </div>
+                    )}
+                    {messages.length === 0 && !isLoading && (
+                        <Empty label="No conversation started"/>
+                    )}
+                    <div className="flex flex-col-reverse gap-y-4">
+                        {messages.map((message) => (
+                            <div key={message.content}
+                                 className={cn(
+                                    "p-8 w-full flex items-start gap-x-8 rounded-lg",
+                                 message.role === "user" ? "bg-white border border-black/10" : "bg-muted",
+                                )}
+                            >
+                                {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
+                                <p className="text-sm">
+                                    {message.content}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
