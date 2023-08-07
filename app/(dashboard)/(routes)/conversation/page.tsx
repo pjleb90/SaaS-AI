@@ -62,7 +62,7 @@ const ConversationPage = () => {
         <div>
             <Heading
                 title="Conversation"
-                description="The advanced Genius conversation model"
+                description="The advanced Genius conversation model."
                 icon={MessageSquare}
                 iconColor="text-violet-500"
                 bgColor="bg-violet-500/10"
@@ -116,7 +116,7 @@ const ConversationPage = () => {
                         </div>
                     )}
                     {messages.length === 0 && !isLoading && (
-                        <Empty label="No conversation started"/>
+                        <Empty label="No conversation started."/>
                     )}
                     <div className="flex flex-col-reverse gap-y-4">
                         {messages.map((message) => (
