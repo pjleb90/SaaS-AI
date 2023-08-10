@@ -8,7 +8,6 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChatCompletionRequestMessage } from "openai";
 import axios from "axios";
-import { cn } from "@/lib/utils";
 import { Music } from "lucide-react";
 
 import { Heading } from "@/components/Heading";
@@ -17,13 +16,11 @@ import { Loader } from "@/components/Loader";
 import { Input } from "@/components/ui/input";
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { UserAvatar } from "@/components/User-Avatar";
-import { BotAvatar } from "@/components/Bot-Avatar";
 import { formSchema } from "./constants";
 
 const MusicPage = () => {
     const router = useRouter();
-    const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
+    const [music, setMusic] = useState<string>();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -36,17 +33,11 @@ const MusicPage = () => {
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            const userMessage: ChatCompletionRequestMessage = {
-                role: "user",
-                content: values.prompt
-            };
-            const newMessages = [...messages, userMessage];
+            setMusic(undefined);
 
-            const response = await axios.post("api/conversation", {
-                messages: newMessages
-            });
+            const response = await axios.post('api/music', values)
 
-            setMessages((current) => [...current, userMessage, response.data]);
+            setMusic(response.data.audio)
 
             form.reset();
 
@@ -115,12 +106,14 @@ const MusicPage = () => {
                             <Loader />
                         </div>
                     )}
-                    {messages.length === 0 && !isLoading && (
+                    {!music && !isLoading && (
                         <Empty label="No music generated."/>
                     )}
-                    <div>
-                        music player
-                    </div>
+                    {music && (
+                        <audio controls className="w-full mt-8">
+                            <source src={music} />
+                        </audio>
+                    )}
                 </div>
             </div>
         </div>

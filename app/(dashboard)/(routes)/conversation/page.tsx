@@ -42,7 +42,7 @@ const ConversationPage = () => {
             };
             const newMessages = [...messages, userMessage];
 
-            const response = await axios.post("api/conversation", {
+            const response = await axios.post('api/conversation', {
                 messages: newMessages
             });
 
