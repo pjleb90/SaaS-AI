@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { Music } from "lucide-react";
+import { VideoIcon } from "lucide-react";
 
 import { Heading } from "@/components/Heading";
 import { Empty } from "@/components/Empty";
@@ -17,9 +17,9 @@ import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { formSchema } from "./constants";
 
-const MusicPage = () => {
+const VideoPage = () => {
     const router = useRouter();
-    const [music, setMusic] = useState<string>();
+    const [video, setvideo] = useState<string>();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -32,11 +32,11 @@ const MusicPage = () => {
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            setMusic(undefined);
+            setvideo(undefined);
 
-            const response = await axios.post('api/music', values)
+            const response = await axios.post('api/video', values)
 
-            setMusic(response.data.audio)
+            setvideo(response.data[0])
 
             form.reset();
 
@@ -51,11 +51,11 @@ const MusicPage = () => {
     return (
         <div>
             <Heading
-                title="Music Generation"
-                description="Turn your prompt into music."
-                icon={Music}
-                iconColor="text-emerald-500"
-                bgColor="bg-emerald-500/10"
+                title="Video Generation"
+                description="Turn your prompt into a video."
+                icon={VideoIcon}
+                iconColor="text-orange-700"
+                bgColor="bg-orange-700/10"
             />
             <div className="px-4 lg:px-8">
                 <div>
@@ -83,7 +83,7 @@ const MusicPage = () => {
                                             <Input
                                                 className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                                                 disabled={isLoading}
-                                                placeholder="Piano solo in the key of E"
+                                                placeholder="A penguin walking on the moon"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -105,13 +105,13 @@ const MusicPage = () => {
                             <Loader />
                         </div>
                     )}
-                    {!music && !isLoading && (
-                        <Empty label="No music generated."/>
+                    {!video && !isLoading && (
+                        <Empty label="No video generated."/>
                     )}
-                    {music && (
-                        <audio controls className="w-full mt-8">
-                            <source src={music} />
-                        </audio>
+                    {video && (
+                        <video className="w-full aspect-video mt-8 rounded-lg border bg-black" controls>
+                            <source src={video} />
+                        </video>
                     )}
                 </div>
             </div>
@@ -119,4 +119,4 @@ const MusicPage = () => {
       );
 }
 
-export default MusicPage;
+export default VideoPage;
