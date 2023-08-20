@@ -20,9 +20,11 @@ import { Loader } from "@/components/Loader";
 import { Input } from "@/components/ui/input";
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 const CodePage = () => {
     const router = useRouter();
+    const proModal = useProModal();
     const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -51,8 +53,9 @@ const CodePage = () => {
             form.reset();
 
         } catch (error:any) {
-            // TODO: Open Pro Modal
-            console.log(error);
+            if(error?.response?.status === 403) {
+                proModal.onOpen();
+            }
         } finally {
             router.refresh();
         }

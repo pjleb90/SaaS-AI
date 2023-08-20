@@ -14,14 +14,17 @@ import { MessageSquare } from "lucide-react";
 import { Heading } from "@/components/Heading";
 import { Empty } from "@/components/Empty";
 import { Loader } from "@/components/Loader";
+import { BotAvatar } from "@/components/Bot-Avatar";
+import { UserAvatar } from "@/components/User-Avatar";
 import { Input } from "@/components/ui/input";
+import { formSchema } from "./constants";
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { UserAvatar } from "@/components/User-Avatar";
-import { BotAvatar } from "@/components/Bot-Avatar";
-import { formSchema } from "./constants";
+
+import { useProModal } from "@/hooks/use-pro-modal";
 
 const ConversationPage = () => {
+    const proModal = useProModal();
     const router = useRouter();
     const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
 
@@ -51,8 +54,9 @@ const ConversationPage = () => {
             form.reset();
 
         } catch (error:any) {
-            // TODO: Open Pro Modal
-            console.log(error);
+            if(error?.response?.status === 403) {
+                proModal.onOpen();
+            }
         } finally {
             router.refresh();
         }
