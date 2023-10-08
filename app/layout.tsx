@@ -10,7 +10,7 @@ import { CrispProvider } from '@/components/crisp-provider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'SaaS AI/Genius',
+  title: 'Oracle',
   description: 'a SaaS AI Platform built with Next.js 13, React, Tailwind, ui.shadcn.com, Prisma, Stripe',
 }
 
