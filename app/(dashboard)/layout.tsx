@@ -12,7 +12,7 @@ const DashboardLayout = async ({
   const isPro = await checkSubscription();
 
   return (
-    <div className="h-full relative">
+    <div className="h-full relative bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,#63e_100%)]">
       <div className="hidden h-full md:flex md:w-72 md:flex-col md:fixed md:inset-y-0 bg-gray-900">
         <Sidebar isPro={isPro} apiLimitCount={apiLimitCount} />
       </div>

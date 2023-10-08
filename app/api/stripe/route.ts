@@ -43,10 +43,10 @@ export async function GET() {
                 price_data: {
                     currency: "USD",
                     product_data: {
-                        name: "Genius Pro",
+                        name: "Oracle Pro",
                         description: "Unlimited AI Generations"
                     },
-                    unit_amount: 2000,
+                    unit_amount: 1000,
                     recurring: {
                         interval: "month"
                     }
